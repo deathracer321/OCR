@@ -5,7 +5,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [ocrData, setOcrData] = useState(null);
   const [error, setError] = useState(null);
-  const [editText, setEditText] = useState(""); // For editable text
+  const [editText, setEditText] = useState("");
   const webcamRef = useRef(null);
 
   const runOcr = async () => {
@@ -24,14 +24,12 @@ function App() {
         setError(data.error || "Something went wrong");
       }
     } catch (err) {
-      console.error("Fetch failed:", err);
       setError("Failed to connect to OCR API.");
     } finally {
       setLoading(false);
     }
   };
 
-  // New: Search by edited text
   const searchByText = async () => {
     setLoading(true);
     setError(null);
@@ -56,134 +54,164 @@ function App() {
   return (
     <div
       style={{
-        padding: "30px",
-        fontFamily: "Arial, sans-serif",
         minHeight: "100vh",
+        padding: "0",
+        fontFamily: "Arial, sans-serif",
         backgroundImage: "url('/bg-gif.gif')",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <img
-        src="/logo.jpeg"
-        alt="OCR Icon"
-        style={{ display: "block" }}
-        width={80}
-        height={80}
-      />
-      <br />
-      <h1 style={{ textAlign: "center" }}>PIECE-ID OCR SCANNER</h1>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!loading) runOcr();
-        }}
+      {/* Header with logo and title */}
+      <div style={{ display: "flex", alignItems: "center", gap: "18px", padding: "30px 30px 0 30px" }}>
+        <img
+          src="/logo.jpeg"
+          alt="OCR Icon"
+          style={{ display: "block" }}
+        />
+        <h1 style={{ margin: 0, color: "#222", letterSpacing: "2px" }}>
+          PIECE-ID OCR SCANNER
+        </h1>
+      </div>
+      <p style={{ color: "#555", marginLeft: 30 }}>
+        <b>Note:</b> Only uppercase letters and numbers are supported.
+      </p>
+
+      {/* Main content: Webcam left, Result right */}
+      <div
         style={{
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          gap: "40px",
+          marginTop: "30px",
         }}
       >
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: "10px 20px",
-            fontSize: "16px",
-            cursor: loading ? "not-allowed" : "pointer",
-            backgroundColor: "#4CAF50",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            marginBottom: "16px",
-          }}
-        >
-          {loading ? "🔄 Scanning..." : "📸 Start OCR Scan"}
-        </button>
-
-        {!loading && (
-          <Webcam
-            audio={false}
-            ref={webcamRef}
-            screenshotFormat="image/jpeg"
-            width={640}
-            height={480}
-          />
-        )}
-      </form>
-
-      <div style={{ marginTop: "30px" }}>
-        {loading && (
-          <h1>
-            ⌛ Please hold the part steady... Scanning in progress (~5 seconds)
-          </h1>
-        )}
-
-        {error && (
-          <div style={{ color: "red", marginTop: "20px" }}>
-            <strong>Error:</strong> {error}
-          </div>
-        )}
-
-        {ocrData && (
-          <div
+        {/* Left: Webcam and scan button */}
+        <div>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              if (!loading) runOcr();
+            }}
             style={{
-              marginTop: "20px",
-              background: "#f4f4f4",
-              padding: "15px",
-              borderRadius: "8px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
-            <h3>✅ OCR Result:</h3>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <input
-                type="text"
-                value={editText}
-                onChange={(e) => setEditText(e.target.value)}
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                padding: "10px 20px",
+                fontSize: "16px",
+                cursor: loading ? "not-allowed" : "pointer",
+                backgroundColor: "#4CAF50",
+                color: "#fff",
+                border: "none",
+                borderRadius: "5px",
+                marginBottom: "16px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              }}
+            >
+              {loading ? "🔄 Scanning..." : "📸 Start OCR Scan"}
+            </button>
+            {!loading && (
+              <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                width={600}
+                height={450}
                 style={{
-                  fontSize: "16px",
-                  padding: "5px 10px",
-                  width: "60%",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
+                  borderRadius: "10px",
+                  boxShadow: "0 2px 12px rgba(0,0,0,0.12)",
+                  background: "#fff"
                 }}
               />
-              <button
-                onClick={searchByText}
-                disabled={loading || !editText.trim()}
-                style={{
-                  padding: "6px 16px",
-                  fontSize: "15px",
-                  backgroundColor: "#2196F3",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "4px",
-                  cursor: loading ? "not-allowed" : "pointer",
-                }}
-              >
-                🔍 Search
-              </button>
-            </div>
-
-            {ocrData.matched_data ? (
-              <div>
-                <h4>📄 Matched CSV Data:</h4>
-                <ul>
-                  {Object.entries(ocrData.matched_data).map(([key, value]) => (
-                    <li key={key} style={{ fontSize: "25px" }}>
-                      <strong>{key}</strong> = {value}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <p>⚠️ No matching CSV data found.</p>
             )}
-          </div>
-        )}
+          </form>
+        </div>
+
+        {/* Right: OCR Result */}
+        <div style={{
+          minWidth: "350px",
+          maxWidth: "500px",
+          background: "rgba(255,255,255,0.92)",
+          borderRadius: "12px",
+          padding: "24px 18px",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.10)",
+        }}>
+          {loading && (
+            <h2 style={{ color: "#333" }}>
+              ⌛ Please hold the part steady... Scanning in progress (~5 seconds)
+            </h2>
+          )}
+
+          {error && (
+            <div style={{ color: "red", marginTop: "20px" }}>
+              <strong>Error:</strong> {error}
+            </div>
+          )}
+
+          {ocrData && (
+            <div>
+              <h3 style={{ color: "#1a237e" }}>✅ OCR Result:</h3>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+                <input
+                  type="text"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  style={{
+                    fontSize: "16px",
+                    padding: "5px 10px",
+                    width: "60%",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
+                  }}
+                />
+                <button
+                  onClick={searchByText}
+                  disabled={loading || !editText.trim()}
+                  style={{
+                    padding: "6px 16px",
+                    fontSize: "15px",
+                    backgroundColor: "#2196F3",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: loading ? "not-allowed" : "pointer",
+                  }}
+                >
+                  🔍 Search
+                </button>
+              </div>
+              <p>
+                <strong>Appeared Count:</strong> {ocrData.appeared_count ?? "-"}
+              </p>
+
+              {ocrData.matched_data ? (
+                <div>
+                  <h4 style={{ color: "#388e3c" }}>📄 Matched CSV Data:</h4>
+                  <ul style={{ fontSize: "18px", paddingLeft: "18px" }}>
+                    {Object.entries(ocrData.matched_data).map(([key, value]) => (
+                      <li key={key}>
+                        <strong>{key}</strong> = {value}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p style={{ color: "#b71c1c" }}>⚠️ No matching CSV data found.</p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* Footer */}
       <footer
         style={{
           width: "100%",
@@ -199,8 +227,7 @@ function App() {
           zIndex: 100,
         }}
       >
-        Developed by <b>Poovasanthan</b> &nbsp;|&nbsp; &copy;{" "}
-        {new Date().getFullYear()} Skaps Industries
+        Developed by <b>Poovasanthan</b> &nbsp;|&nbsp; &copy; {new Date().getFullYear()} Skaps Industries
       </footer>
     </div>
   );
