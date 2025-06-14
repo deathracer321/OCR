@@ -54,61 +54,64 @@ function App() {
   };
 
   return (
-     <div
-    style={{
-      padding: "30px",
-      fontFamily: "Arial, sans-serif",
-      minHeight: "100vh",
-      backgroundImage: "url('/bg-gif.gif')",
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-    }}
-  >
+    <div
+      style={{
+        padding: "30px",
+        fontFamily: "Arial, sans-serif",
+        minHeight: "100vh",
+        backgroundImage: "url('/bg-gif.gif')",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <img
+        src="/logo.jpeg"
+        alt="OCR Icon"
+        style={{ display: "block" }}
+        width={80}
+        height={80}
+      />
+      <br />
+      <h1 style={{ textAlign: "center" }}>PIECE-ID OCR SCANNER</h1>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!loading) runOcr();
+        }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            cursor: loading ? "not-allowed" : "pointer",
+            backgroundColor: "#4CAF50",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            marginBottom: "16px",
+          }}
+        >
+          {loading ? "🔄 Scanning..." : "📸 Start OCR Scan"}
+        </button>
 
-    <img
-      src="/logo.jpeg"
-      alt="OCR Icon"
-      style={{ display: "block" }}
-      width={80}
-      height={80}
-    />
-  <br />
-    <h1 style={{textAlign: "center"}}>PIECE-ID OCR SCANNER</h1>
-<form
-  onSubmit={e => {
-    e.preventDefault();
-    if (!loading) runOcr();
-  }}
-  style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
->
-  <button
-    type="submit"
-    disabled={loading}
-    style={{
-      padding: "10px 20px",
-      fontSize: "16px",
-      cursor: loading ? "not-allowed" : "pointer",
-      backgroundColor: "#4CAF50",
-      color: "#fff",
-      border: "none",
-      borderRadius: "5px",
-      marginBottom: "16px"
-    }}
-  >
-    {loading ? "🔄 Scanning..." : "📸 Start OCR Scan"}
-  </button>
-
-  {!loading && (
-    <Webcam
-      audio={false}
-      ref={webcamRef}
-      screenshotFormat="image/jpeg"
-      width={640}
-      height={480}
-    />
-  )}
-</form>
+        {!loading && (
+          <Webcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            width={640}
+            height={480}
+          />
+        )}
+      </form>
 
       <div style={{ marginTop: "30px" }}>
         {loading && (
@@ -168,7 +171,7 @@ function App() {
                 <h4>📄 Matched CSV Data:</h4>
                 <ul>
                   {Object.entries(ocrData.matched_data).map(([key, value]) => (
-                    <li key={key}>
+                    <li key={key} style={{ fontSize: "25px" }}>
                       <strong>{key}</strong> = {value}
                     </li>
                   ))}
@@ -180,6 +183,25 @@ function App() {
           </div>
         )}
       </div>
+
+      <footer
+        style={{
+          width: "100%",
+          background: "rgba(0,0,0,0.7)",
+          color: "#fff",
+          textAlign: "center",
+          padding: "18px 0 10px 0",
+          position: "fixed",
+          left: 0,
+          bottom: 0,
+          fontSize: "16px",
+          letterSpacing: "1px",
+          zIndex: 100,
+        }}
+      >
+        Developed by <b>Poovasanthan</b> &nbsp;|&nbsp; &copy;{" "}
+        {new Date().getFullYear()} Skaps Industries
+      </footer>
     </div>
   );
 }
