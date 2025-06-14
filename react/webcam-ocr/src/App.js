@@ -54,8 +54,27 @@ function App() {
   };
 
   return (
-    <div style={{ padding: "30px", fontFamily: "Arial, sans-serif" }}>
-      <h1>🧠 Live OCR Scanner (via Python API)</h1>
+     <div
+    style={{
+      padding: "30px",
+      fontFamily: "Arial, sans-serif",
+      minHeight: "100vh",
+      backgroundImage: "url('/bg-gif.gif')",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}
+  >
+
+    <img
+      src="/logo.jpeg"
+      alt="OCR Icon"
+      style={{ display: "block" }}
+      width={80}
+      height={80}
+    />
+  <br />
+    <h1 style={{textAlign: "center"}}>PIECE-ID OCR SCANNER</h1>
       <button
         onClick={runOcr}
         disabled={loading}
@@ -84,9 +103,9 @@ function App() {
 
       <div style={{ marginTop: "30px" }}>
         {loading && (
-          <p>
-            ⌛ Please hold the text steady... Scanning in progress (~10 seconds)
-          </p>
+          <h1>
+            ⌛ Please hold the part steady... Scanning in progress (~5 seconds)
+          </h1>
         )}
 
         {error && (
@@ -134,9 +153,6 @@ function App() {
                 🔍 Search
               </button>
             </div>
-            <p>
-              <strong>Appeared Count:</strong> {ocrData.appeared_count ?? "-"}
-            </p>
 
             {ocrData.matched_data ? (
               <div>
