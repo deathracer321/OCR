@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef ,useEffect} from "react";
 import Webcam from "react-webcam";
 
 function App() {
@@ -29,6 +29,28 @@ function App() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      const active = document.activeElement;
+      const isInput = active && active.tagName === "INPUT";
+
+      if (isInput) {
+        // Enter inside input triggers search
+        searchByText();
+      } else {
+        // Enter outside input triggers scan
+        if (!loading) {
+          runOcr();
+        }
+      }
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, [editText, loading]); // include dependencies
 
   const searchByText = async () => {
     setLoading(true);
