@@ -75,31 +75,40 @@ function App() {
     />
   <br />
     <h1 style={{textAlign: "center"}}>PIECE-ID OCR SCANNER</h1>
-      <button
-        onClick={runOcr}
-        disabled={loading}
-        style={{
-          padding: "10px 20px",
-          fontSize: "16px",
-          cursor: loading ? "not-allowed" : "pointer",
-          backgroundColor: "#4CAF50",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-        }}
-      >
-        {loading ? "🔄 Scanning..." : "📸 Start OCR Scan"}
-      </button>
+<form
+  onSubmit={e => {
+    e.preventDefault();
+    if (!loading) runOcr();
+  }}
+  style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+>
+  <button
+    type="submit"
+    disabled={loading}
+    style={{
+      padding: "10px 20px",
+      fontSize: "16px",
+      cursor: loading ? "not-allowed" : "pointer",
+      backgroundColor: "#4CAF50",
+      color: "#fff",
+      border: "none",
+      borderRadius: "5px",
+      marginBottom: "16px"
+    }}
+  >
+    {loading ? "🔄 Scanning..." : "📸 Start OCR Scan"}
+  </button>
 
-      {!loading && (
-        <Webcam
-          audio={false}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          width={400}
-          height={300}
-        />
-      )}
+  {!loading && (
+    <Webcam
+      audio={false}
+      ref={webcamRef}
+      screenshotFormat="image/jpeg"
+      width={640}
+      height={480}
+    />
+  )}
+</form>
 
       <div style={{ marginTop: "30px" }}>
         {loading && (
