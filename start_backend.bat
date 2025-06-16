@@ -1,4 +1,4 @@
 @echo off
 echo ⚙️ Starting Python FastAPI backend...
-cd /d C:\Users\s2har\OneDrive\Desktop\poovasanthan\pythoncode
-start cmd /k "uvicorn main:app --reload"
+cd pythoncode
+start cmd /k "python -m uvicorn main:app --reload"
